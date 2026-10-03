@@ -20,7 +20,11 @@ import type {
   HandResultListener,
   HandTrackingDebug,
 } from '../../mediapipe/handLandmarkTypes'
-import { CameraView } from './CameraView'
+import {
+  CameraView,
+  MAX_CAMERA_ZOOM,
+  MIN_CAMERA_ZOOM,
+} from './CameraView'
 import type { ARSceneSettings } from './ARScene'
 
 type FacingMode = 'environment' | 'user'
@@ -159,6 +163,7 @@ export function HandTrackingView({
   const ringGuideSettingsRef = useRef(ringGuideSettings)
   const [smoothing, setSmoothing] = useState(0.85)
   const smoothingRef = useRef(smoothing)
+  const [viewportZoom, setViewportZoom] = useState(MIN_CAMERA_ZOOM)
   const [arSettings, setARSettings] = useState(INITIAL_AR_SETTINGS)
   const overlaySettingsRef = useRef<HandOverlaySettings>(INITIAL_AR_SETTINGS)
   const [facingMode, setFacingMode] = useState<FacingMode>('environment')
@@ -463,11 +468,11 @@ export function HandTrackingView({
     try {
       const width = video.videoWidth || resolution.width
       const height = video.videoHeight || resolution.height
-      const snapshot = document.createElement('canvas')
-      snapshot.width = width
-      snapshot.height = height
+      const composite = document.createElement('canvas')
+      composite.width = width
+      composite.height = height
 
-      const context = snapshot.getContext('2d')
+      const context = composite.getContext('2d')
       if (!context) throw new Error('Could not create the snapshot canvas.')
 
       drawSnapshotLayer(context, video, width, height, mirrored)
@@ -480,6 +485,27 @@ export function HandTrackingView({
       }
 
       drawSnapshotLayer(context, landmarkCanvas, width, height, mirrored)
+
+      const snapshot = document.createElement('canvas')
+      snapshot.width = width
+      snapshot.height = height
+      const snapshotContext = snapshot.getContext('2d')
+      if (!snapshotContext) {
+        throw new Error('Could not create the snapshot output canvas.')
+      }
+      const cropWidth = width / viewportZoom
+      const cropHeight = height / viewportZoom
+      snapshotContext.drawImage(
+        composite,
+        (width - cropWidth) / 2,
+        (height - cropHeight) / 2,
+        cropWidth,
+        cropHeight,
+        0,
+        0,
+        width,
+        height,
+      )
 
       const blob = await new Promise<Blob>((resolve, reject) => {
         snapshot.toBlob((result) => {
@@ -520,6 +546,8 @@ export function HandTrackingView({
           environmentAvailable={environmentAvailable}
           arAvailable={arAvailable}
           arSettings={arSettings}
+          zoom={viewportZoom}
+          onZoomChange={setViewportZoom}
         />
 
         {!isActive && (
@@ -683,6 +711,26 @@ export function HandTrackingView({
         </div>
 
         <div className="ar-tuning-controls">
+          <div className="control-group--slider">
+            <label htmlFor="viewport-zoom">
+              <span>Viewport zoom</span>
+              <output>{viewportZoom.toFixed(2)}×</output>
+            </label>
+            <input
+              id="viewport-zoom"
+              type="range"
+              min={MIN_CAMERA_ZOOM}
+              max={MAX_CAMERA_ZOOM}
+              step="0.05"
+              value={viewportZoom}
+              onChange={(event) => setViewportZoom(Number(event.target.value))}
+            />
+            <div className="range-directions" aria-hidden="true">
+              <span>Full frame</span>
+              <span>3× crop</span>
+            </div>
+          </div>
+
           <div className="control-group--slider">
             <label htmlFor="pose-smoothing">
               <span>AR pose smoothing</span>

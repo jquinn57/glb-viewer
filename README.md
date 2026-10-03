@@ -34,7 +34,7 @@ The ring can target the index, middle, ring, or pinky finger, or be turned off. 
 
 ## AR ring rendering
 
-The camera stage contains three exactly matched layers: video, a transparent React Three Fiber canvas, and the optional 2D landmark/pose overlay. For a front-facing camera, all three complete layers are mirrored together in CSS; tracking and Three.js transforms remain unmirrored internally.
+The camera stage contains three exactly matched layers: video, a transparent React Three Fiber canvas, and the optional 2D landmark/pose overlay. For a front-facing camera, all three complete layers are mirrored together in CSS; tracking and Three.js transforms remain unmirrored internally. **Viewport zoom** provides a centered 1×–3× crop through either its slider or a two-finger pinch on the camera. It transforms all three display layers together while MediaPipe continues detecting against the original full-resolution camera frame. Saved snapshots reproduce the selected crop.
 
 The orthographic AR camera uses video pixels as world units. The explicit conversion in `poseToThreeTransform.ts` maps MediaPipe/canvas +X right and +Y down into Three camera-space +X right and +Y up. MediaPipe's smaller-Z-is-closer convention is inverted so Three +Z points toward the camera. The tracked MCP→PIP direction becomes the ring asset's local +Z hole axis. Local +Y—the gemstone direction—is projected toward the camera while remaining perpendicular to the finger. This image-relative projection is isolated so a calibrated perspective camera can replace it later.
 
