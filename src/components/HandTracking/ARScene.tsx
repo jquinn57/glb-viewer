@@ -176,7 +176,19 @@ export function ARScene({
       style={{ position: 'absolute', inset: 0, zIndex: 1 }}
       orthographic
       dpr={[1, 2]}
-      camera={{ position: [0, 0, 1_000], near: 0.1, far: 2_000 }}
+      camera={{
+        position: [0, 0, 1_000],
+        near: 0.1,
+        far: 2_000,
+        left: -width / 2,
+        right: width / 2,
+        top: height / 2,
+        bottom: -height / 2,
+        // Ring poses use source-video pixels. Without a manual camera, R3F
+        // rewrites this frustum from the canvas's CSS size on every resize,
+        // which breaks alignment most visibly for portrait video.
+        manual: true,
+      }}
       gl={{
         alpha: true,
         antialias: true,
