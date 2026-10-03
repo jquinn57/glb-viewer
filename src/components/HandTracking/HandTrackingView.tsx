@@ -58,7 +58,7 @@ const INITIAL_DEBUG: HandTrackingDebug = {
 
 const INITIAL_RING_GUIDE: RingGuideSettings = {
   finger: 'ring',
-  sizeScale: 1.4,
+  sizeScale: 1,
   positionOffset: 0,
 }
 
@@ -619,7 +619,7 @@ export function HandTrackingView({
               id="ring-guide-size"
               type="range"
               min="0.6"
-              max="1.5"
+              max="2"
               step="0.01"
               value={ringGuideSettings.sizeScale}
               disabled={ringGuideSettings.finger === 'off'}

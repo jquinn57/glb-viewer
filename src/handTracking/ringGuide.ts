@@ -45,6 +45,10 @@ const FINGER_DEFINITIONS: Record<Exclude<RingFinger, 'off'>, FingerDefinition> =
 // UI offset remains centered at zero around this calibrated starting point.
 const NATURAL_POSITION = 0.55
 
+// Calibrate the raw hand-size estimate so the UI's 100% setting matches the
+// established default ring size. Keep this separate from the user multiplier.
+const RING_SIZE_CALIBRATION = 1.4
+
 export function getFingerMcpIndex(finger: RingFinger) {
   return finger === 'off' ? null : FINGER_DEFINITIONS[finger].mcp
 }
@@ -120,7 +124,8 @@ export function estimateRingGuide(
     y: mcp.y + fingerDirection.y * proximalLength * position,
   }
   const baseDiameter = handScale * finger.diameterRatio
-  const diameter = baseDiameter * settings.sizeScale
+  const diameter =
+    baseDiameter * RING_SIZE_CALIBRATION * settings.sizeScale
 
   return {
     center,
