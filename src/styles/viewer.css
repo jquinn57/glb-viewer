@@ -43,6 +43,39 @@
   box-shadow: inset 0 0 0 5px #11110f, inset 0 0 0 6px #c9a96e;
 }
 
+.mode-selector {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  background: #1b1b18;
+}
+
+.mode-selector button {
+  min-height: 31px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 2px;
+  color: #88857e;
+  background: transparent;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 160ms ease;
+}
+
+.mode-selector button:hover {
+  color: #d8d4cb;
+}
+
+.mode-selector button.is-active {
+  color: #1a1813;
+  background: #d8bc85;
+}
+
 .render-label {
   display: flex;
   gap: 10px;
@@ -122,6 +155,11 @@
   border-radius: 50%;
   background: #65b782;
   content: '';
+}
+
+.live-indicator.is-inactive::before {
+  background: #6f6c65;
+  box-shadow: none;
 }
 
 .control-group {
@@ -433,6 +471,256 @@ input[type='range']::-webkit-slider-thumb {
   left: 10px !important;
 }
 
+.hand-tracking-frame {
+  background:
+    radial-gradient(circle at center, rgba(216, 188, 133, 0.07), transparent 55%),
+    #090908;
+}
+
+.hand-camera-viewport {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 28px;
+  overflow: hidden;
+}
+
+.hand-camera-stage {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  background: #050505;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+}
+
+.hand-camera-video,
+.hand-landmark-overlay {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+}
+
+.hand-camera-video {
+  z-index: 0;
+  object-fit: fill;
+}
+
+.hand-camera-video.is-mirrored,
+.hand-landmark-overlay.is-mirrored,
+.hand-ar-canvas.is-mirrored {
+  transform: scaleX(-1);
+}
+
+.hand-landmark-overlay {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hand-ar-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  transform-origin: center;
+  pointer-events: none !important;
+}
+
+.hand-ar-error {
+  position: absolute;
+  z-index: 3;
+  right: 12px;
+  top: 12px;
+  padding: 8px 10px;
+  border: 1px solid rgba(212, 107, 83, 0.55);
+  border-radius: 2px;
+  color: #f7e6e2;
+  background: rgba(70, 28, 23, 0.86);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hand-tracking-status {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  width: min(430px, calc(100% - 48px));
+  padding: 24px;
+  border: 1px solid rgba(216, 188, 133, 0.28);
+  border-radius: 3px;
+  background: rgba(20, 20, 17, 0.91);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+  text-align: center;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(16px);
+}
+
+.hand-tracking-status--error {
+  border-color: rgba(212, 107, 83, 0.55);
+}
+
+.hand-tracking-status p {
+  margin: 12px 0 0;
+  color: #ded9cf;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.hand-detection-hint {
+  position: absolute;
+  z-index: 3;
+  top: 22px;
+  left: 22px;
+  padding: 9px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 2px;
+  color: #d8d4cb;
+  background: rgba(17, 17, 15, 0.76);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+}
+
+.ring-guide-controls {
+  padding: 4px 0 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.085);
+}
+
+.ar-debug-controls {
+  padding: 10px 0 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.085);
+}
+
+.ar-debug-controls .toggle-row {
+  min-height: 34px;
+}
+
+.ring-guide-control {
+  padding-top: 17px;
+}
+
+.ring-guide-control--select label {
+  display: block;
+  margin-bottom: 9px;
+  color: #d8d4cb;
+  font-size: 12px;
+}
+
+.ring-guide-control--select select {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid #45433d;
+  border-radius: 3px;
+  color: #d8d4cb;
+  background: #20201c;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+}
+
+.ring-guide-control.control-group--slider label {
+  margin-bottom: 12px;
+}
+
+.tracking-smoothing {
+  padding: 18px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.085);
+}
+
+.tracking-smoothing label {
+  margin-bottom: 12px;
+}
+
+.ar-tuning-controls {
+  display: grid;
+  gap: 18px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.085);
+}
+
+.ar-tuning-controls label {
+  margin-bottom: 12px;
+}
+
+.range-directions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  color: #65625c;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+input[type='range']:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.hand-debug-list {
+  margin: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.085);
+}
+
+.hand-debug-list div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 43px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.065);
+}
+
+.hand-debug-list dt {
+  color: #aaa69d;
+  font-size: 11px;
+}
+
+.hand-debug-list dd {
+  margin: 0;
+  color: #e2ddd3;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  text-align: right;
+}
+
+.hand-landmark-readout {
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.065);
+}
+
+.hand-landmark-readout code {
+  display: block;
+  margin-top: 11px;
+  color: #d8bc85;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.hand-debug-panel .button-row {
+  margin-top: auto;
+}
+
+.snapshot-error {
+  margin: 10px 0 0;
+  color: #e79a89;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.hand-debug-panel {
+  overflow-y: auto;
+}
+
 @media (max-width: 840px) {
   .app-shell {
     display: block;
@@ -443,9 +731,12 @@ input[type='range']::-webkit-slider-thumb {
     padding: 0 18px;
   }
 
-  .render-label span:first-child,
-  .render-label__divider {
+  .render-label {
     display: none;
+  }
+
+  .mode-selector {
+    margin-left: auto;
   }
 
   .viewer-frame {
@@ -462,6 +753,21 @@ input[type='range']::-webkit-slider-thumb {
 
   .button-row {
     margin-top: 0;
+  }
+
+  .hand-camera-viewport {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 540px) {
+  .brand span:last-child {
+    display: none;
+  }
+
+  .mode-selector button {
+    padding: 0 10px;
+    letter-spacing: 0.06em;
   }
 }
 

@@ -3,6 +3,7 @@ import { Component, type ErrorInfo, type ReactNode } from 'react'
 type Props = {
   children: ReactNode
   onError?: (error: Error) => void
+  fallback?: ReactNode
 }
 
 type State = {
@@ -23,6 +24,7 @@ export class SceneErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.error) {
+      if (this.props.fallback) return this.props.fallback
       return (
         <div className="viewer-message viewer-message--error" role="alert">
           <span className="eyebrow">Rendering error</span>
